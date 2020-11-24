@@ -28,7 +28,7 @@ void file_copy(const char *src_file_name, const char *dest_file_name)
     }
 
     int page_size = getpagesize();
-    int buff_size = page_size;
+    int buff_size = 4 * page_size;
     char *buff = malloc(buff_size);
 
     int n = 1;
@@ -49,6 +49,11 @@ void file_copy(const char *src_file_name, const char *dest_file_name)
     }
 
     free(buff);
+
+    struct stat src_stat;
+    fstat(src_file, &src_stat);
+
+    fchmod(dest_file, src_stat.st_mode);
 
     debug_print("closing file: %s\n", src_file_name);
     close(src_file);
