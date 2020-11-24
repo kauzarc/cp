@@ -28,18 +28,21 @@ void file_copy(const char *src_file_name, const char *dest_file_name)
     }
 
     int page_size = getpagesize();
-    char *buff = malloc(page_size * sizeof(char));
+    int buff_size = page_size;
+    char *buff = malloc(buff_size);
 
     int n = 1;
     bool eof = false;
     while (!eof)
     {
-        debug_print("reading page %d\n", n);
-        int size_readed = read(src_file, buff, page_size);
-        if (size_readed < page_size)
+        debug_print("reading %d: %d bytes\n", n, buff_size);
+
+        int size_readed = read(src_file, buff, buff_size);
+        if (size_readed < buff_size)
             eof = true;
 
-        debug_print("copying page %d\n", n);
+        debug_print("copying %d: %d bytes\n", n, size_readed);
+
         write(dest_file, buff, size_readed);
 
         ++n;
