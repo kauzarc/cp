@@ -106,15 +106,17 @@ void folder_copy(const char *src_folder_name, const char *dest_folder_name)
             strcat(subdest_name, src_entry->d_name);
 
             struct stat src_entry_stat;
-            stat(src_entry->d_name, &src_entry_stat);
-
-            if (S_ISDIR(src_entry_stat.st_mode))
+            if (stat(subsrc_name, &src_entry_stat) == 0)
             {
-                folder_copy(subsrc_name, subdest_name);
+                if (S_ISDIR(src_entry_stat.st_mode))
+                    folder_copy(subsrc_name, subdest_name);
+                else if (S_ISREG(src_entry_stat.st_mode))
+                    file_copy(subsrc_name, subdest_name);
             }
-            else if (S_ISREG(src_entry_stat.st_mode))
+            else
             {
-                file_copy(subsrc_name, subdest_name);
+                printf("ERROR: cant find name: %s\n", subsrc_name);
+                exit(EXIT_FAILURE);
             }
 
             free(subsrc_name);

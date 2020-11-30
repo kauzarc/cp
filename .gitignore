@@ -1,2 +1,4 @@
 cp
 build
+test
+.vscode
